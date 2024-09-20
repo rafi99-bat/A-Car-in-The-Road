@@ -78,16 +78,16 @@ const skyBoxShaderMaterial = new THREE.ShaderMaterial({
             vec3 skyColor;
             if (timeOfDay < 0.25) {
                 // Dawn
-                skyColor = mix(nightColor, dawnDuskColor, timeOfDay * 4.0);
+                skyColor = mix(nightColor, dawnDuskColor, smoothstep(0.0, 0.25, timeOfDay));
             } else if (timeOfDay < 0.5) {
                 // Day
-                skyColor = mix(dawnDuskColor, dayColor, (timeOfDay - 0.25) * 4.0);
+                skyColor = mix(dawnDuskColor, dayColor, smoothstep(0.25, 0.5, timeOfDay));
             } else if (timeOfDay < 0.75) {
                 // Dusk
-                skyColor = mix(dayColor, dawnDuskColor, (timeOfDay - 0.5) * 4.0);
+                skyColor = mix(dayColor, dawnDuskColor, smoothstep(0.5, 0.75, timeOfDay));
             } else {
                 // Night
-                skyColor = mix(dawnDuskColor, nightColor, (timeOfDay - 0.75) * 4.0);
+                skyColor = mix(dawnDuskColor, nightColor, smoothstep(0.75, 1.0, timeOfDay));
             }
 
             gl_FragColor = vec4(envColor * brightness * skyColor, 1.0);
@@ -228,7 +228,7 @@ directionalLight.castShadow = true;
 scene.add(directionalLight);
 
 // Create the moon object
-const moonGeometry = new THREE.SphereGeometry(5, 32, 32);
+const moonGeometry = new THREE.SphereGeometry(3, 32, 32);
 const moonMaterial = new THREE.MeshStandardMaterial({ color: 0xd3d3d3, emissive: 0xd6e6ff });
 moon = new THREE.Mesh(moonGeometry, moonMaterial);
 moon.position.set(20, 50, 20); // Position the moon in the sky
