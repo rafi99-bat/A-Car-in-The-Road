@@ -80,7 +80,7 @@ const skyBoxShaderMaterial = new THREE.ShaderMaterial({
                 // Dawn
                 skyColor = mix(nightColor, dawnDuskColor, smoothstep(0.0, 0.25, timeOfDay));
             } else if (timeOfDay < 0.5) {
-                // Day
+                // Day/Noon
                 skyColor = mix(dawnDuskColor, dayColor, smoothstep(0.25, 0.5, timeOfDay));
             } else if (timeOfDay < 0.75) {
                 // Dusk
@@ -157,10 +157,10 @@ loader.load('model/car/scene.gltf', function (gltf) {
     car = gltf.scene.children[0];
 
     wheels.push(
-        car.getObjectByName('wheel_fl'),
-        car.getObjectByName('wheel_fr'),
-        car.getObjectByName('wheel_bl'),
-        car.getObjectByName('wheel_br')
+        car.getObjectByName('wheel_fl'), // Front left wheel
+        car.getObjectByName('wheel_fr'), // Front right wheel
+        car.getObjectByName('wheel_bl'), // Back left wheel
+        car.getObjectByName('wheel_br') // Back right wheel
     );
     car.position.y = 0.01;
     scene.add(car);
@@ -421,9 +421,9 @@ function updateDayNightCycle() {
     const angle = cycleTime % (2 * Math.PI);
 
     if (angle <= Math.PI) {
-        moon.position.set(Math.cos(angle) * 50, Math.sin(angle) * 50, 0);
+        moon.position.set(Math.cos(angle) * 50, Math.sin(angle) * 50, 0); // Day time
     } else {
-        moon.position.set(-Math.cos(angle) * 50, -Math.sin(angle) * 50, 0);
+        moon.position.set(-Math.cos(angle) * 50, -Math.sin(angle) * 50, 0); // Night time
     }
 
     directionalLight.position.copy(moon.position);
@@ -439,10 +439,10 @@ function updateDayNightCycle() {
         car.children.forEach((child) => {
             if (child.isPointLight) {
                 if (child.color.getHexString() === 'dff1f4') {
-                    child.intensity = 2;
+                    child.intensity = 2; // headlight
                 }
                 if (child.color.getHexString() === 'ff0000') {
-                    child.intensity = 1;
+                    child.intensity = 1; // taillight
                 }
             }
         });
@@ -456,7 +456,7 @@ function updateDayNightCycle() {
 
         car.children.forEach((child) => {
             if (child.isPointLight) {
-                child.intensity = 0;
+                child.intensity = 0; // no light
             }
         });
     }
